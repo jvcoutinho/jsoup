@@ -422,4 +422,3 @@ public class Document extends Element {
         return super.equals(o);
     }
 }
-
