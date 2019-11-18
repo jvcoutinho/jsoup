@@ -12,6 +12,10 @@ import org.jsoup.parser.TokenQueue;
 /**
  * Parses a CSS selector into an Evaluator tree.
  */
+
+/**
+ * Parses a CSS selector into an Evaluator tree.
+ */
 class QueryParser {
     private final static String[] combinators = {",", ">", "+", "~", " "};
     private static final String[] AttributeEvals = new String[]{"=", "!=", "^=", "$=", "*=", "~="};
@@ -218,12 +222,12 @@ class QueryParser {
         if (tagName.startsWith("*|")) {
             evals.add(new CombiningEvaluator.Or(new Evaluator.Tag(tagName.trim().toLowerCase()), new Evaluator.TagEndsWith(tagName.replace("*|", ":").trim().toLowerCase())));
         } else {
-            // namespaces: if element name is "abc:def", selector must be "abc|def", so flip:
-            if (tagName.contains("|"))
-                tagName = tagName.replace("|", ":");
+        // namespaces: if element name is "abc:def", selector must be "abc|def", so flip:
+        if (tagName.contains("|"))
+            tagName = tagName.replace("|", ":");
 
-            evals.add(new Evaluator.Tag(tagName.trim()));
-        }
+        evals.add(new Evaluator.Tag(tagName.trim()));
+    }
     }
 
     private void byAttribute() {
