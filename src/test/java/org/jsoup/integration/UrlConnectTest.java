@@ -6,6 +6,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.junit.Ignore;
+
+import static org.hamcrest.core.Is.is;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,8 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  Tests the URL connection. Not enabled by default, so tests don't require network connection.
@@ -329,4 +331,5 @@ public class UrlConnectTest {
         Document doc = res.parse(); // would throw an error if charset unsupported
         assertEquals("ISO-8859-1", res.charset());
     }
+
 }
