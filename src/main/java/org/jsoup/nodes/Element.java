@@ -1174,8 +1174,8 @@ public class Element extends Node {
                 if (inClass) {
                     // white space ends a class name, compare it with the requested one, ignore case
                     if (i - start == wantLen && classAttr.regionMatches(true, start, className, 0, wantLen)) {
-                        return true;
-                    }
+                return true;
+        }
                     inClass = false;
                 }
             } else {
