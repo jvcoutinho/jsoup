@@ -238,6 +238,12 @@ public interface Connection {
      * Common methods for Requests and Responses
      * @param <T> Type of Base, either Request or Response
      */
+
+
+    /**
+     * Common methods for Requests and Responses
+     * @param <T> Type of Base, either Request or Response
+     */
     interface Base<T extends Base> {
 
         /**
@@ -538,4 +544,3 @@ public interface Connection {
         public String value();
     }
 }
-
