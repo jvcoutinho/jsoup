@@ -345,5 +345,4 @@ public class UrlConnectTest {
         Document doc = res.parse();
         assertEquals("http://example.com/foo.jpg", doc.select("img").first().absUrl("src"));
     }
-
 }

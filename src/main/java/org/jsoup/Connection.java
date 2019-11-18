@@ -538,4 +538,3 @@ public interface Connection {
         public String value();
     }
 }
-

@@ -686,11 +686,11 @@ public class HttpConnection implements Connection {
             OutputStreamWriter w = new OutputStreamWriter(outputStream, DataUtil.defaultCharset);
             boolean first = true;
             for (Connection.KeyVal keyVal : data) {
-                if (!first)
+                if (!first) 
                     w.append('&');
                 else
                     first = false;
-
+                
                 w.write(URLEncoder.encode(keyVal.key(), DataUtil.defaultCharset));
                 w.write('=');
                 w.write(URLEncoder.encode(keyVal.value(), DataUtil.defaultCharset));
