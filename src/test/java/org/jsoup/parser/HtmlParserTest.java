@@ -900,7 +900,7 @@ public class HtmlParserTest {
         assertEquals("Check", els.text());
     }
 
-    @Test public void testFragment() {
+    @Test public void testFragement() {
         // make sure when parsing a body fragment, a script tag at start goes into the body
         String html =
             "<script type=\"text/javascript\">console.log('foo');</script>\n" +
