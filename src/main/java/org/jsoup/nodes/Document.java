@@ -280,6 +280,18 @@ public class Document extends Element {
     public boolean updateMetaCharsetElement() {
         return updateMetaCharset;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Appendable> T html(T appendable) {
+    	 // Exclude outer wrapper tag.
+    	for (Node node : childNodes)
+            node.outerHtml(appendable);
+    	
+    	return appendable;
+    }
 
     @Override
     public Document clone() {
@@ -551,7 +563,7 @@ public class Document extends Element {
     }
 
     public enum QuirksMode {
-        noQuirks, quirks, limitedQuirks
+        noQuirks, quirks, limitedQuirks;
     }
 
     public QuirksMode quirksMode() {

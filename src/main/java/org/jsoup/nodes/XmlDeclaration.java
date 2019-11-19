@@ -50,8 +50,8 @@ public class XmlDeclaration extends Node {
             return sb.toString();
         }
         else {
-            return attributes.get(DECL_KEY);
-        }
+        return attributes.get(DECL_KEY);
+    }
     }
 
 	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
@@ -64,8 +64,8 @@ public class XmlDeclaration extends Node {
 
 	void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {}
 
-    @Override
-    public String toString() {
+	@Override
+public String toString() {
         return outerHtml();
     }
 }

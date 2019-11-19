@@ -89,9 +89,7 @@ public class TextNode extends Node {
             parent().addChildren(siblingIndex()+1, tailNode);
 
         return tailNode;
-    }
-
-	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+    }void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         if (out.prettyPrint() && ((siblingIndex() == 0 && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock() && !isBlank()) || (out.outline() && siblingNodes().size()>0 && !isBlank()) ))
             indent(accum, depth, out);
 
@@ -100,10 +98,20 @@ public class TextNode extends Node {
         Entities.escape(accum, getWholeText(), out, false, normaliseWhite, false);
     }
 
+
+	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        if (out.prettyPrint() && ((siblingIndex() == 0 && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock() && !isBlank()) || (out.outline() && siblingNodes().size()>0 && !isBlank()) ))
+            indent(accum, depth, out);
+
+        boolean normaliseWhite = out.prettyPrint() && parent() instanceof Element
+                && !Element.preserveWhitespace((Element) parent());
+        Entities.escape(accum, getWholeText(), out, false, normaliseWhite, false);
+    }
+
 	void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {}
 
-    @Override
-    public String toString() {
+	@Override
+public String toString() {
         return outerHtml();
     }
 

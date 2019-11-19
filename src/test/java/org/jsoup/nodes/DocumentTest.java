@@ -1,25 +1,19 @@
 package org.jsoup.nodes;
 
-import org.jsoup.Jsoup;
-import org.jsoup.TextUtil;
-import org.jsoup.integration.ParseTest;
-import org.jsoup.nodes.Document.OutputSettings;
-import org.jsoup.nodes.Document.OutputSettings.Syntax;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.io.StringWriter;
+import org.jsoup.Jsoup;
+import org.jsoup.TextUtil;
+import org.jsoup.integration.ParseTest;
+import org.jsoup.nodes.Document.OutputSettings;
+import org.junit.Test;
+import org.junit.Ignore;
+import org.jsoup.nodes.Document.OutputSettings.Syntax;
+import static org.junit.Assert.*;
 
 /**
  Tests for Document.
@@ -57,9 +51,9 @@ public class DocumentTest {
     }
 
     @Test public void testOutputEncoding() {
-        Document doc = Jsoup.parse("<p title=π>π & < > </p>");
+        Document doc = Jsoup.parse("<p title=?>? & < > </p>");
         // default is utf-8
-        assertEquals("<p title=\"π\">π &amp; &lt; &gt; </p>", doc.body().html());
+        assertEquals("<p title=\"?\">? &amp; &lt; &gt; </p>", doc.body().html());
         assertEquals("UTF-8", doc.outputSettings().charset().name());
 
         doc.outputSettings().charset("ascii");
@@ -73,7 +67,7 @@ public class DocumentTest {
     @Test public void testXhtmlReferences() {
         Document doc = Jsoup.parse("&lt; &gt; &amp; &quot; &apos; &times;");
         doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
-        assertEquals("&lt; &gt; &amp; \" ' ×", doc.body().html());
+        assertEquals("&lt; &gt; &amp; \" ' �", doc.body().html());
     }
 
     @Test public void testNormalisesStructure() {
