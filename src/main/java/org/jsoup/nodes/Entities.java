@@ -1,6 +1,5 @@
 package org.jsoup.nodes;
 
-import org.jsoup.SerializationException;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.parser.Parser;
 
@@ -70,19 +69,12 @@ public class Entities {
         return full.get(name);
     }
     
-    static String escape(String string, Document.OutputSettings out) {
+    static String escape(String string, Document.OutputSettings out) throws IOException {
         StringBuilder accum = new StringBuilder(string.length() * 2);
-        try {
-            escape(accum, string, out, false, false, false);
-        } catch (IOException e) {
-            throw new SerializationException(e); // doesn't happen
-        }
+        escape(accum, string, out, false, false, false);
         return accum.toString();
-    }
-
-    // this method is ugly, and does a lot. but other breakups cause rescanning and stringbuilder generations
-    static void escape(Appendable accum, String string, Document.OutputSettings out,
-                       boolean inAttribute, boolean normaliseWhite, boolean stripLeadingWhite) throws IOException {
+    }static void escape(StringBuilder accum, String string, Document.OutputSettings out,
+                       boolean inAttribute, boolean normaliseWhite, boolean stripLeadingWhite) {
 
         boolean lastWasWhite = false;
         boolean reachedNonWhite = false;
@@ -152,6 +144,84 @@ public class Entities {
             } else {
                 final String c = new String(Character.toChars(codePoint));
                 if (encoder.canEncode(c)) // uses fallback encoder for simplicity
+                    accum.append(c);
+                else
+                    accum.append("&#x").append(Integer.toHexString(codePoint)).append(';');
+            }
+        }
+    }
+
+
+    // this method is ugly, and does a lot. but other breakups cause rescanning and stringbuilder generations
+    static void escape(Appendable accum, String string, Document.OutputSettings out,
+                       boolean inAttribute, boolean normaliseWhite, boolean stripLeadingWhite) throws IOException {
+
+        boolean lastWasWhite = false;
+        boolean reachedNonWhite = false;
+        EscapeMode escapeMode = out.escapeMode();
+        CharsetEncoder encoder = out.encoder();
+        Map<Character, String> map = escapeMode.getMap();
+        final int length = string.length();
+
+        int codePoint;
+        for (int offset = 0; offset < length; offset += Character.charCount(codePoint)) {
+            codePoint = string.codePointAt(offset);
+
+            if (normaliseWhite) {
+                if (StringUtil.isWhitespace(codePoint)) {
+                    if ((stripLeadingWhite && !reachedNonWhite) || lastWasWhite)
+                        continue;
+                    accum.append(' ');
+                    lastWasWhite = true;
+                    continue;
+                } else {
+                    lastWasWhite = false;
+                    reachedNonWhite = true;
+                }
+            }
+            // surrogate pairs, split implementation for efficiency on single char common case (saves creating strings, char[]):
+            if (codePoint < Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+                final char c = (char) codePoint;
+                // html specific and required escapes:
+                switch (c) {
+                    case '&':
+                        accum.append("&amp;");
+                        break;
+                    case 0xA0:
+                        if (escapeMode != EscapeMode.xhtml)
+                            accum.append("&nbsp;");
+                        else
+                            accum.append(c);
+                        break;
+                    case '<':
+                        if (!inAttribute)
+                            accum.append("&lt;");
+                        else
+                            accum.append(c);
+                        break;
+                    case '>':
+                        if (!inAttribute)
+                            accum.append("&gt;");
+                        else
+                            accum.append(c);
+                        break;
+                    case '"':
+                        if (inAttribute)
+                            accum.append("&quot;");
+                        else
+                            accum.append(c);
+                        break;
+                    default:
+                        if (encoder.canEncode(c))
+                            accum.append(c);
+                        else if (map.containsKey(c))
+                            accum.append('&').append(map.get(c)).append(';');
+                        else
+                            accum.append("&#x").append(Integer.toHexString(codePoint)).append(';');
+                }
+            } else {
+                final String c = new String(Character.toChars(codePoint));
+                if (encoder.canEncode(c))
                     accum.append(c);
                 else
                     accum.append("&#x").append(Integer.toHexString(codePoint)).append(';');

@@ -79,9 +79,9 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
         StringBuilder accum = new StringBuilder();
         
         try {
-        	html(accum, (new Document("")).outputSettings());
+        html(accum, (new Document("")).outputSettings());
         } catch(IOException exception) {
-        	throw new SerializationException(exception);
+        	throw new SerializationException(String.format("Serialization of the attribute \"%s\" failed!", getKey()) , exception);
         }
         return accum.toString();
     }
@@ -100,7 +100,7 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
      @return string
      */
     @Override
-    public String toString() {
+public String toString() {
         return html();
     }
 

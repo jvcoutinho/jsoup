@@ -152,27 +152,27 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
      */
     public String html() {
         StringBuilder accum = new StringBuilder();
-        try {
-            html(accum, (new Document("")).outputSettings()); // output settings a bit funky, but this html() seldom used
-        } catch (IOException e) { // ought never happen
-            throw new SerializationException(e);
-        }
+        html(accum, (new Document("")).outputSettings()); // output settings a bit funky, but this html() seldom used
         return accum.toString();
     }
     
-    void html(Appendable accum, Document.OutputSettings out) throws IOException {
+    void html(Appendable accum, Document.OutputSettings out) {
         if (attributes == null)
             return;
         
-        for (Map.Entry<String, Attribute> entry : attributes.entrySet()) {
-            Attribute attribute = entry.getValue();
-            accum.append(" ");
-            attribute.html(accum, out);
+        try {
+        	for (Map.Entry<String, Attribute> entry : attributes.entrySet()) {
+                Attribute attribute = entry.getValue();
+                accum.append(" ");
+                attribute.html(accum, out);
+            }
+        } catch(IOException exception) {
+        	throw new SerializationException("Attribute serialization failed!", exception);
         }
     }
     
     @Override
-    public String toString() {
+public String toString() {
         return html();
     }
 
@@ -225,7 +225,7 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         }
 
         @Override
-        public Set<Entry<String, String>> entrySet() {
+public Set<Entry<String, String>> entrySet() {
             return new EntrySet();
         }
 
@@ -241,12 +241,12 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         private class EntrySet extends AbstractSet<Map.Entry<String, String>> {
 
             @Override
-            public Iterator<Map.Entry<String, String>> iterator() {
+public Iterator<Map.Entry<String, String>> iterator() {
                 return new DatasetIterator();
             }
 
            @Override
-            public int size() {
+public int size() {
                 int count = 0;
                 Iterator iter = new DatasetIterator();
                 while (iter.hasNext())

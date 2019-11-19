@@ -7,9 +7,12 @@ import static org.jsoup.nodes.Document.OutputSettings;
 import static org.jsoup.nodes.Entities.EscapeMode.*;
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+
 public class EntitiesTest {
-    @Test public void escape() {
-        String text = "Hello &<> Ã… Ã¥ Ï€ æ–° there Â¾ Â© Â»";
+    @Test public void escape() throws IOException {
+        String text = "Hello &<> Å å ? ? there ¾ © »";
         String escapedAscii = Entities.escape(text, new OutputSettings().charset("ascii").escapeMode(base));
         String escapedAsciiFull = Entities.escape(text, new OutputSettings().charset("ascii").escapeMode(extended));
         String escapedAsciiXhtml = Entities.escape(text, new OutputSettings().charset("ascii").escapeMode(xhtml));
@@ -19,8 +22,8 @@ public class EntitiesTest {
         assertEquals("Hello &amp;&lt;&gt; &Aring; &aring; &#x3c0; &#x65b0; there &frac34; &copy; &raquo;", escapedAscii);
         assertEquals("Hello &amp;&lt;&gt; &angst; &aring; &pi; &#x65b0; there &frac34; &copy; &raquo;", escapedAsciiFull);
         assertEquals("Hello &amp;&lt;&gt; &#xc5; &#xe5; &#x3c0; &#x65b0; there &#xbe; &#xa9; &#xbb;", escapedAsciiXhtml);
-        assertEquals("Hello &amp;&lt;&gt; Ã… Ã¥ Ï€ æ–° there Â¾ Â© Â»", escapedUtfFull);
-        assertEquals("Hello &amp;&lt;&gt; Ã… Ã¥ Ï€ æ–° there Â¾ Â© Â»", escapedUtfMin);
+        assertEquals("Hello &amp;&lt;&gt; Å å ? ? there ¾ © »", escapedUtfFull);
+        assertEquals("Hello &amp;&lt;&gt; Å å ? ? there ¾ © »", escapedUtfMin);
         // odd that it's defined as aring in base but angst in full
 
         // round trip
@@ -31,7 +34,7 @@ public class EntitiesTest {
         assertEquals(text, Entities.unescape(escapedUtfMin));
     }
 
-    @Test public void escapeSupplementaryCharacter() {
+    @Test public void escapeSupplementaryCharacter() throws IOException{
         String text = new String(Character.toChars(135361));
         String escapedAscii = Entities.escape(text, new OutputSettings().charset("ascii").escapeMode(base));
         assertEquals("&#x210c1;", escapedAscii);
@@ -41,7 +44,7 @@ public class EntitiesTest {
 
     @Test public void unescape() {
         String text = "Hello &amp;&LT&gt; &reg &angst; &angst &#960; &#960 &#x65B0; there &! &frac34; &copy; &COPY;";
-        assertEquals("Hello &<> Â® Ã… &angst Ï€ Ï€ æ–° there &! Â¾ Â© Â©", Entities.unescape(text));
+        assertEquals("Hello &<> ® Å &angst ? ? ? there &! ¾ © ©", Entities.unescape(text));
 
         assertEquals("&0987654321; &unknown", Entities.unescape("&0987654321; &unknown"));
     }
@@ -54,13 +57,13 @@ public class EntitiesTest {
     }
 
     
-    @Test public void caseSensitive() {
-        String unescaped = "Ãœ Ã¼ & &";
+    @Test public void caseSensitive() throws IOException {
+        String unescaped = "Ü ü & &";
         assertEquals("&Uuml; &uuml; &amp; &amp;",
                 Entities.escape(unescaped, new OutputSettings().charset("ascii").escapeMode(extended)));
         
         String escaped = "&Uuml; &uuml; &amp; &AMP";
-        assertEquals("Ãœ Ã¼ & &", Entities.unescape(escaped));
+        assertEquals("Ü ü & &", Entities.unescape(escaped));
     }
     
     @Test public void quoteReplacements() {
@@ -76,9 +79,9 @@ public class EntitiesTest {
         doc.outputSettings().charset("ascii");
         Element p = doc.select("p").first();
         assertEquals("&sup1;&sup2;&sup3;&frac14;&frac12;&frac34;", p.html());
-        assertEquals("Â¹Â²Â³Â¼Â½Â¾", p.text());
+        assertEquals("¹²³¼½¾", p.text());
         doc.outputSettings().charset("UTF-8");
-        assertEquals("Â¹Â²Â³Â¼Â½Â¾", p.html());
+        assertEquals("¹²³¼½¾", p.html());
     }
 
     @Test public void noSpuriousDecodes() {

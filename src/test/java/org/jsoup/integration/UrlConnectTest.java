@@ -97,14 +97,14 @@ public class UrlConnectTest {
     @Test
     public void doesPost() throws IOException {
         Document doc = Jsoup.connect(echoURL)
-            .data("uname", "Jsoup", "uname", "Jonathan", "百", "度一下")
+            .data("uname", "Jsoup", "uname", "Jonathan", "?", "???")
             .cookie("auth", "token")
             .post();
 
         assertEquals("POST", ihVal("REQUEST_METHOD", doc));
         //assertEquals("gzip", ihVal("HTTP_ACCEPT_ENCODING", doc)); // current proxy removes gzip on post
         assertEquals("auth=token", ihVal("HTTP_COOKIE", doc));
-        assertEquals("度一下", ihVal("百", doc));
+        assertEquals("???", ihVal("?", doc));
         assertEquals("Jsoup, Jonathan", ihVal("uname", doc));
     }
 
@@ -125,7 +125,7 @@ public class UrlConnectTest {
     @Test
     public void doesPut() throws IOException {
         Connection.Response res = Jsoup.connect(echoURL)
-                .data("uname", "Jsoup", "uname", "Jonathan", "百", "度一下")
+                .data("uname", "Jsoup", "uname", "Jonathan", "?", "???")
                 .cookie("auth", "token")
                 .method(Connection.Method.PUT)
                 .execute();

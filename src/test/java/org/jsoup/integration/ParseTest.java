@@ -81,7 +81,7 @@ public class ParseTest {
         Element a = doc.select("a[href=t/2322m2]").first();
         assertEquals("http://www.yahoo.co.jp/_ylh=X3oDMTB0NWxnaGxsBF9TAzIwNzcyOTYyNjUEdGlkAzEyBHRtcGwDZ2Ex/t/2322m2",
                 a.attr("abs:href")); // session put into <base>
-        assertEquals("全国、人気の駅ランキング", a.text());
+        assertEquals("全国�?人気�?�駅ランキング", a.text());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ParseTest {
 
         // check auto-detect from meta
         assertEquals("GB2312", doc.outputSettings().charset().displayName());
-        assertEquals("<title>百度一下，你就知道      </title>", doc.select("title").outerHtml());
+        assertEquals("<title>百度一下，你就知�?�      </title>", doc.select("title").outerHtml());
 
         doc.outputSettings().charset("ascii");
         assertEquals("<title>&#x767e;&#x5ea6;&#x4e00;&#x4e0b;&#xff0c;&#x4f60;&#x5c31;&#x77e5;&#x9053;      </title>",
@@ -116,7 +116,7 @@ public class ParseTest {
                 "http://www.baidu.com/"); // http charset is gb2312, but NOT specifying it, to test http-equiv parse
         // check auto-detect from meta
         assertEquals("GB2312", doc.outputSettings().charset().displayName());
-        assertEquals("<title>百度一下，你就知道</title>", doc.select("title").outerHtml());
+        assertEquals("<title>百度一下，你就知�?�</title>", doc.select("title").outerHtml());
     }
 
     @Test

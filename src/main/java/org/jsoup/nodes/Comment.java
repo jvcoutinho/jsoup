@@ -43,7 +43,7 @@ public class Comment extends Node {
 	void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {}
 
     @Override
-    public String toString() {
+public String toString() {
         return outerHtml();
     }
 }

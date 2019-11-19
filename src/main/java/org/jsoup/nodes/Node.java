@@ -8,6 +8,8 @@ import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -566,17 +568,18 @@ public abstract class Node implements Cloneable {
     abstract void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) throws IOException;
 
     /**
-     * Write this node and its children to the given {@link Appendable}.
-     *
-     * @param appendable the {@link Appendable} to write to.
-     * @return the supplied {@link Appendable}, for chaining.
+     * Recursively serializes this node to the given {@link Appendable} and returns the resulting <code>Appendable</code> instance.
+     *   
+     * @param appendable the {@link Appendable} that should hold the content of this node and all its child nodes.
+     * @return the given {@link Appendable}, now containing this node and all child nodes.
      */
     public <T extends Appendable> T html(T appendable) {
-        outerHtml(appendable);
-        return appendable;
+    	outerHtml(appendable);
+    	return appendable;
     }
     
-	public String toString() {
+	@Override
+public String toString() {
         return outerHtml();
     }
 
@@ -676,18 +679,18 @@ public abstract class Node implements Cloneable {
 
         public void head(Node node, int depth) {
             try {
-				node.outerHtmlHead(accum, depth, out);
+            node.outerHtmlHead(accum, depth, out);
 			} catch (IOException exception) {
-				throw new SerializationException(exception);
+				throw new SerializationException("Node head serialization failed!", exception);
 			}
         }
 
         public void tail(Node node, int depth) {
             if (!node.nodeName().equals("#text")) { // saves a void hit.
 				try {
-					node.outerHtmlTail(accum, depth, out);
+                node.outerHtmlTail(accum, depth, out);
 				} catch (IOException exception) {
-					throw new SerializationException(exception);
+					throw new SerializationException("Node tail serialization failed!", exception);
 				}
             }
         }

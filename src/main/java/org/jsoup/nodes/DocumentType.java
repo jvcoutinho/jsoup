@@ -32,10 +32,8 @@ public class DocumentType extends Node {
     @Override
     public String nodeName() {
         return "#doctype";
-    }
-
-    @Override
-    void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+    }@Override
+    void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         if (out.syntax() == Syntax.html && !has(PUBLIC_ID) && !has(SYSTEM_ID)) {
             // looks like a html5 doctype, go lowercase for aesthetics
             accum.append("<!doctype");
@@ -51,11 +49,24 @@ public class DocumentType extends Node {
         accum.append('>');
     }
 
-    @Override
-    void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {
-    }
 
     private boolean has(final String attribute) {
         return !StringUtil.isBlank(attr(attribute));
+    }
+
+    @Override
+    void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+        accum.append("<!DOCTYPE");
+        if (!StringUtil.isBlank(attr("name")))
+            accum.append(" ").append(attr("name"));
+        if (!StringUtil.isBlank(attr("publicId")))
+            accum.append(" PUBLIC \"").append(attr("publicId")).append('"');
+        if (!StringUtil.isBlank(attr("systemId")))
+            accum.append(" \"").append(attr("systemId")).append('"');
+        accum.append('>');
+    }
+
+    @Override
+    void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {
     }
 }
